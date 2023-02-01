@@ -4,7 +4,7 @@ services:
   db:
     hostname: mysql.urlchecker.local
     build:
-      context: .
+      context: ..
       dockerfile: ./deployments/mysql/Dockerfile
     environment:
     - MYSQL_ROOT_PASSWORD=root
@@ -20,7 +20,7 @@ services:
   api:
     hostname: api.urlchecker.local
     build:
-      context: .
+      context: ..
       dockerfile: ./deployments/api/Dockerfile
     ports: 
       - 443:443
@@ -41,7 +41,7 @@ services:
   disp:
     hostname: disp.urlchecker.local
     build:
-      context: .
+      context: ..
       dockerfile: ./deployments/disp/Dockerfile
     networks:
       static-network:

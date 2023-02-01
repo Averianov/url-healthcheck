@@ -55,7 +55,7 @@ test-integration:
 	$(GOTEST) ./test -v -count=1 -tags 'integration' -timeout 20m
 
 local-up:
-	COMPOSE_HTTP_TIMEOUT=600 docker-compose up --build
+	COMPOSE_HTTP_TIMEOUT=600 docker-compose -f ./deployments/docker-compose.yml up --build
 
 local-down:
 	docker-compose down
