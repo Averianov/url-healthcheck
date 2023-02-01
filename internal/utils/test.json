@@ -1,0 +1,19 @@
+{
+    "urls": [
+        {
+            "url": "http://ya.ru",
+            "checks": ["CHECK_TYPE_STATUS_CODE", "CHECK_TYPE_TEXT"],
+            "min_checks_cnt": 2
+        },
+        {
+            "url": "http://vk.com",
+            "checks": ["CHECK_TYPE_STATUS_CODE"],
+            "min_checks_cnt": 1
+        },
+        {
+            "url": "http://mail.ru",
+            "checks": ["CHECK_TYPE_STATUS_CODE", "CHECK_TYPE_TEXT"],
+            "min_checks_cnt": 1
+        }
+    ]
+}
