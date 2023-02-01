@@ -16,7 +16,6 @@ type urlDispatcher struct {
 
 type Task struct {
 	utils.URL
-	done chan bool
 }
 
 // NewURLDispatcher create new dispatcher
@@ -47,7 +46,7 @@ func (d *urlDispatcher) StartURLDispatcher(frequency time.Duration, configFile s
 			fmt.Printf("\n\n### start check urls\n")
 			for _, config := range d.urlConfig.Urls {
 				task := new(Task)
-				task = &Task{config, make(chan bool)}
+				task = &Task{config}
 				var check *db.Check
 				check = d.CheckTask(task)
 				if err != nil {
@@ -57,7 +56,6 @@ func (d *urlDispatcher) StartURLDispatcher(frequency time.Duration, configFile s
 				if err != nil {
 					return
 				}
-				//<-task.done
 			}
 			continue
 		}
