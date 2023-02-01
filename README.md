@@ -26,12 +26,19 @@
 подготовить .env файл, либо в запускаемой системе установить переменные окружения согласно образца
 
 > DB_HOST=localhost
+
 > DB_PORT=3306
+
 > DB_SCHEMA=work
+
 > DB_USER=checker
+
 > DB_PASSWORD=checker
+
 > DB_DROP=false
+
 > GRPC_PORT=443
+
 > HCK_DURATION=10
 
 Скачать репозиторий и перейти в него
