@@ -44,14 +44,9 @@
 Скачать репозиторий и перейти в него
 ```
 gh repo clone Averianov/url-healthcheck
-cd ./url-healthckeck
+cd ./url-healthcheck
 git checkout dev
 git pull
-```
-
-Перевести проект в режим GO111MODULE
-```
-go mod init
 ```
 
 ### Локальное развертывание
