@@ -58,7 +58,7 @@ local-up:
 	COMPOSE_HTTP_TIMEOUT=600 docker-compose -f ./deployments/docker-compose.yml up --build
 
 local-down:
-	docker-compose down
+	docker-compose -f ./deployments/docker-compose.yml down
 
 local-restart: | local-down local-up
 
