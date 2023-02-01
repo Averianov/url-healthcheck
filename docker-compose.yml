@@ -1,0 +1,48 @@
+version: '2'
+
+services:
+  db:
+    hostname: mysql.urlchecker.local
+    build:
+      context: .
+      dockerfile: ./deployments/mysql/Dockerfile
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=work
+    - MYSQL_USER=checker
+    - MYSQL_PASSWORD=checker
+    ports: 
+      - 3306:3306
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.2
+
+
+  app:
+    hostname: app.urlchecker.local
+    build:
+      context: .
+      dockerfile: ./deployments/app/Dockerfile
+    ports: 
+      - 443:443
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.3
+    environment:
+    - DB_HOST=172.20.0.2
+    - DB_PORT=3306
+    - DB_SCHEMA=work
+    - DB_USER=checker
+    - DB_PASSWORD=checker
+    - DB_DROP=false
+    - URL_CONFIG=url.json
+    depends_on:
+      - db
+    tty: true
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
