@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"time"
 	"url-healthcheck/config"
 	"url-healthcheck/internal/dispatcher"
 	"url-healthcheck/pkg/db"
@@ -11,13 +13,12 @@ import (
 func main() {
 	var err error
 
-	err = config.LoadConfig()
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
+	config.LoadConfig()
 
-	var conn db.DB
-	conn, err = mysqldb.NewConnection(
+	fmt.Printf("# Try connect to database %s:%s\n", config.DBHost, config.DBPort)
+
+	var db db.DB
+	db, err = mysqldb.NewConnection(
 		config.DBHost,
 		config.DBPort,
 		config.DBSchema,
@@ -28,7 +29,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
+	fmt.Println("database ready")
 
-	d := dispatcher.NewURLDispatcher(conn, "config", "url.json")
-	log.Fatalf("failed to URLDispatcher: %v", d.StartURLDispatcher())
+	fmt.Println("# URLDispatcher starting")
+	d := dispatcher.NewURLDispatcher(db)
+	log.Fatalf("failed to URLDispatcher: %v", d.StartURLDispatcher(time.Duration(config.HealthCheckDuration), config.URLConfig))
 }

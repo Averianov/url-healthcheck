@@ -12,8 +12,10 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+// StartGRPCServer launch grpc api
 func StartGRPCServer(
 	db db.DB,
+	port string,
 ) (err error) {
 	var srv *grpc.Server
 
@@ -26,7 +28,7 @@ func StartGRPCServer(
 	reflection.Register(srv)
 
 	var lis net.Listener
-	lis, err = net.Listen("tcp", ":443")
+	lis, err = net.Listen("tcp", ":"+port)
 	if err != nil {
 		err = fmt.Errorf("failed to listen: %v", err)
 		return

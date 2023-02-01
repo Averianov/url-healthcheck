@@ -16,11 +16,14 @@ type infoServer struct {
 	pb.UnimplementedInfoServer
 }
 
+// NewInfoServer create grpc service InfoServer
 func NewInfoServer(conn db.DB) pb.InfoServer {
 	return &infoServer{
 		db: conn,
 	}
 }
+
+// Checks get and returned checks list from db
 func (s *infoServer) Checks(ctx context.Context, _ *pb.Empty) (list *pb.CheckList, err error) {
 	for ctx.Err() == nil {
 		select {
@@ -28,29 +31,30 @@ func (s *infoServer) Checks(ctx context.Context, _ *pb.Empty) (list *pb.CheckLis
 			err = ctx.Err()
 			return
 		default:
-
-			var checks []*db.Check
+			fmt.Println("Incoming grpc request Checks")
+			var checks []db.Check
 			checks, err = s.db.GetCheckList()
 			if err != nil {
 				err = status.Error(codes.Internal, err.Error())
-				fmt.Printf("%v", err)
+				//fmt.Println(err)
 				return
 			}
 
 			var grpcChecks []*pb.Check = []*pb.Check{}
 			for _, chk := range checks {
-				fmt.Printf("%v", chk)
+				//fmt.Printf("%v", chk)
 				grpcCheck := new(pb.Check)
-				grpcCheck.Id = chk.Id
+				grpcCheck.Id = int64(chk.ID)
 				grpcCheck.Url = chk.Url
 				grpcCheck.Type = pb.Check_CheckType(pb.Check_CheckType_value[chk.Type])
+				grpcCheck.Status = pb.Check_CheckStatus(pb.Check_CheckStatus_value[chk.Status])
 				grpcCheck.Comment = chk.Comment
 				grpcChecks = append(grpcChecks, grpcCheck)
 			}
 
 			list = new(pb.CheckList)
 			list.Checks = grpcChecks
-			fmt.Printf("extraction checks was complite: %v", list.Checks)
+			//fmt.Printf("extraction checks was complite: %v", list.Checks)
 			return
 		}
 	}

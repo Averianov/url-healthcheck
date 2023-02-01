@@ -2,76 +2,41 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
+	"io/ioutil"
 	"os"
-	"path/filepath"
 )
 
 type URL struct {
-	Url          string   `json:"url"`
-	Checks       []string `json:"checks"`
-	MinChecksCnt int32    `json:"min_checks_cnt"`
+	Url    string
+	Checks []string
+	Count  int `json:"min_checks_cnt"`
 }
 
-type URLs struct {
-	Urls []URL `json:"urls"`
+type URLConfig struct {
+	Urls []URL
 }
 
-func ReadJSON(dir, file string) (urls []URLs, err error) {
+// ReadJSON search and unmarshal data from json file
+func ReadJSON(fileName string) (urls URLConfig, err error) {
 	var filePath string
-	filePath, err = findFileWithPath(dir, file)
+	filePath, err = os.Getwd()
 	if err != nil {
-		fmt.Printf("%v\n", err)
 		return
 	}
 
+	filePath = filePath + "/" + fileName
+	//fmt.Printf("%s\n", filePath)
 	var raw []byte
-	raw, err = readFile(filePath)
+	raw, err = ioutil.ReadFile(filePath)
 	if err != nil {
-		fmt.Printf("%v\n", err)
+		//fmt.Println(err)
 		return
 	}
 
+	//fmt.Printf("%v\n", raw)
 	err = json.Unmarshal([]byte(raw), &urls)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-	}
-	return
-}
-
-func findFileWithPath(dir string, searchFile string) (file string, err error) {
-	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() && path == searchFile {
-			fmt.Printf("%s\n", path)
-			file = path
-			return nil
-		}
-		return err
-	})
-	if err != nil {
-		fmt.Printf("%v\n", err)
-	}
-	return
-}
-
-func readFile(filePath string) (raw []byte, err error) {
-	var target *os.File
-	target, err = os.Open(filePath)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
-
-	defer func() {
-		if err := target.Close(); err != nil {
-			fmt.Printf("%v\n", err)
-			return
-		}
-	}()
-
-	_, err = target.Read(raw)
-	if err != nil {
-		fmt.Printf("%v\n", err)
+		//fmt.Println(err)
 	}
 	return
 }

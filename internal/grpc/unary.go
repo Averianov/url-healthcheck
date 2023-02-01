@@ -2,11 +2,11 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 
 	"google.golang.org/grpc"
 )
 
+// UnaryInterceptor do preparing incoming requests
 func UnaryInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context,
 		req interface{},
@@ -15,7 +15,7 @@ func UnaryInterceptor() grpc.UnaryServerInterceptor {
 	) (i interface{}, err error) {
 		defer func(err error) {
 			if err != nil {
-				fmt.Println(err)
+				//fmt.Println(err)
 			}
 		}(err)
 

@@ -28,17 +28,15 @@ func NewConnection(host, port, name, user, password string, dropDB bool) (conn c
 	builder.WriteString(")/")
 	builder.WriteString(name)
 	builder.WriteString("?charset=utf8mb4&parseTime=True&loc=Local")
-	fmt.Println(builder.String())
 
 	// Waiting for MySql DB to be available
 	var client *gorm.DB
 	for {
-
 		if client, err = gorm.Open(
 			mysql.Open(builder.String()),
 			&gorm.Config{},
 		); err != nil {
-			fmt.Printf("Wait access to DB, %s\n", err.Error())
+			//fmt.Printf("Wait access to DB, %s\n", err.Error())
 			time.Sleep(10 * time.Second)
 			continue
 		} else {
@@ -51,9 +49,11 @@ func NewConnection(host, port, name, user, password string, dropDB bool) (conn c
 	// When need start application from clear DB
 	if dropDB {
 		conn.Migrator().DropTable(&db.Check{})
+		fmt.Println("db was dropped")
 	}
 
-	conn.AutoMigrate(&db.Check{})
+	conn.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&db.Check{})
+	fmt.Println("db was created if not exist")
 
 	return
 }

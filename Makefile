@@ -21,6 +21,12 @@ run-api:
 	go run cmd/api/main.go
 run-disp:
 	go run cmd/url-dispatcher/main.go
+run-full:
+	ps aux | grep -e 'urlapi' | awk '{print $1}' | xargs kill -9
+	ps aux | grep -e 'urldisp' | awk '{print $1}' | xargs kill -9
+	./urlapi > logapi.log 2>&1 &
+	./urldisp > logdisp.log 2>&1 &
+	tail -F logdisp.log
 
 help:
 	@echo 'Usage: make <OPTIONS> ... <TARGETS>'
@@ -30,6 +36,7 @@ help:
 	@echo '    compile                 	Build executable file.'
 	@echo '    run-api                	Start api without compile.'
 	@echo '    run-disp               	Start dispatcher without compile.'
+	@echo '    run-full               	Start all proccess with logging.'
 	@echo '    help                    	Show this help screen.'
 	@echo '    unit         			Run unit tests.'
 	@echo '    test-integration        	Run integration tests.'
@@ -48,10 +55,10 @@ test-integration:
 	$(GOTEST) ./test -v -count=1 -tags 'integration' -timeout 20m
 
 local-up:
-	./deployments/docker-compose up -d
+	docker-compose -f ./deployments/docker-compose.yml up -d
 
 local-down:
-	./deployments/docker-compose down
+	docker-compose -f ./deployments/docker-compose.yml up down
 
 local-restart: | local-down local-up
 

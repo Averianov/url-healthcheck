@@ -44,6 +44,8 @@
 Скачать репозиторий и перейти в него
 ```
 gh repo clone Averianov/url-healthcheck
+git checkout dev
+git pull
 cd ./url-healthckeck
 ```
 

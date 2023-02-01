@@ -7,25 +7,15 @@ import (
 	"url-healthcheck/internal/grpc"
 	"url-healthcheck/pkg/db"
 	"url-healthcheck/pkg/db/mysqldb"
-
-	"github.com/joho/godotenv"
 )
 
 func main() {
 	var err error
 
-	err = config.LoadConfig()
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
+	config.LoadConfig()
 
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatalf("%v", err)
-	}
-
-	var conn db.DB
-	conn, err = mysqldb.NewConnection(
+	var db db.DB
+	db, err = mysqldb.NewConnection(
 		config.DBHost,
 		config.DBPort,
 		config.DBSchema,
@@ -36,10 +26,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("%v", err)
 	}
-	fmt.Printf("database ready")
+	fmt.Println("database ready")
 
 	fmt.Println("GRPCServer starting")
-	log.Fatalf("failed to GRPCServer: %v", grpc.StartGRPCServer(
-		conn,
-	))
+	log.Fatalf("failed to GRPCServer: %v", grpc.StartGRPCServer(db, config.GRPCPort))
 }

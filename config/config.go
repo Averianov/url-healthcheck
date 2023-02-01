@@ -11,27 +11,33 @@ var (
 	DBUser              string
 	DBPassword          string
 	DBDrop              bool
+	URLConfig           string
+	GRPCPort            string
 	HealthCheckDuration int64
 )
 
 const (
-	DefaulDBtHost              = "localhost"
 	DefaultDBPort              = "3306"
-	DefaultHealthCheckDuration = 60 * 10 // in seconds (default 10 minutes)
+	DefaultDBSchema            = "urlcheck"
+	DefaultDBUser              = "checker"
+	DefaultDBPassword          = "checker"
+	DefaultURLConfig           = "url.json"
+	DefaultGRPCPort            = "443"
+	DefaultHealthCheckDuration = 10 // in seconds (default 10 minutes)
 )
 
-func LoadConfig() (err error) {
-	err = godotenv.Load(".env")
-	if err != nil {
-		err = nil
-	}
+// LoadConfig load enveronment form .env file if it exist and read enveronment
+func LoadConfig() {
+	godotenv.Load(".env")
 
-	DBHost = optionalEnvStr("DB_HOSTS", DefaulDBtHost)
+	DBHost = mustEnvStr("DB_HOST")
 	DBPort = optionalEnvStr("DB_PORT", DefaultDBPort)
-	DBSchema = mustEnvStr("DB_SCHEMA")
-	DBUser = optionalEnvStr("DB_USER", "")
-	DBPassword = optionalEnvStr("DB_PASSWORD", "")
+	DBSchema = optionalEnvStr("DB_SCHEMA", DefaultDBSchema)
+	DBUser = optionalEnvStr("DB_USER", DefaultDBUser)
+	DBPassword = optionalEnvStr("DB_PASSWORD", DefaultDBPassword)
 	DBDrop = optionalEnvBool("DB_DROP", false)
+	URLConfig = optionalEnvStr("URL_CONFIG", DefaultURLConfig)
+	GRPCPort = optionalEnvStr("GRPC_PORT", DefaultGRPCPort)
 	HealthCheckDuration = optionalEnvInt64("HCK_DURATION", DefaultHealthCheckDuration)
 
 	return
