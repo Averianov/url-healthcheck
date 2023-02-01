@@ -7,9 +7,10 @@ import (
 )
 
 func TestService(t *testing.T) {
-	cmdExec(t, "docker-compose", "up", "--build", "-d", "app")
+	//	cmdExec(t, "docker-compose", "up", "--build", "-d", "disp")
+	cmdExec(t, "docker-compose", "up", "--build", "-d")
 
-	//
+	// some test
 
 	defer func() {
 		cmdExec(t, "docker-compose", "down")

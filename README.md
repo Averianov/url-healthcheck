@@ -79,3 +79,10 @@ make local-down
 ```
 grpcurl -plaintext localhost:443 com.url.healthcheck.Info/Checks
 ```
+
+### Тестирование
+
+Для запуска тестов требуется выполнить команду
+```
+make unit
+```
