@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    container_name: db
+    build:
+      context: .
+      dockerfile: ./deployments/mysql/Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+      MYSQL_USER: checker
+      MYSQL_PASSWORD: checker
+    ports:
+      - "3306:3306"
+    tty: true
+
+  app:
+    container_name: app
+    build: 
+      context: .
+      dockerfile: ./deployments/app/Dockerfile
+    environment:
+      DB_HOSTS: localhost
+      DB_PORT: "3306"
+      DB_SCHEMA: test
+      DB_USER: checker
+      DB_PASSWORD: checker
+      DB_DROP: false
+      URL_CONFIG: "test.json"
+    ports:
+      - "443:443"
+    depends_on:
+      - db
+    tty: true
+      
