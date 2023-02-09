@@ -66,8 +66,20 @@ func (d *urlDispatcher) StartURLDispatcher(frequency time.Duration, configFile s
 func (d *urlDispatcher) CheckTask(task *Task) (check *db.Check) {
 	var err error
 	var checkMethod string
-
 	count := task.Count
+
+	defer func() {
+		if err != nil {
+			fmt.Printf("%s: %s - %s\n", task.Url, pb.Check_CHECK_STATUS_FAIL.String(), err)
+			check = &db.Check{
+				Url:     task.Url,
+				Type:    checkMethod,
+				Status:  pb.Check_CHECK_STATUS_FAIL.String(),
+				Comment: err.Error(),
+			}
+		}
+	}()
+
 	for _, checkMethod = range task.Checks {
 		//fmt.Printf("count %d\n", count)
 		if count == 0 {
@@ -76,26 +88,12 @@ func (d *urlDispatcher) CheckTask(task *Task) (check *db.Check) {
 		} else if checkMethod == pb.Check_CHECK_TYPE_STATUS_CODE.String() && count != 0 {
 			err = method.CheckStatusCode(task.Url)
 			if err != nil {
-				fmt.Printf("%s: %s (%v) %s\n", task.Url, pb.Check_CHECK_STATUS_FAIL.String(), task.Checks, err)
-				check = &db.Check{
-					Url:     task.Url,
-					Type:    checkMethod,
-					Status:  pb.Check_CHECK_STATUS_FAIL.String(),
-					Comment: err.Error(),
-				}
 				return
 			}
 
 		} else if checkMethod == pb.Check_CHECK_TYPE_TEXT.String() && count != 0 {
 			err = method.CheckText(task.Url)
 			if err != nil {
-				fmt.Printf("%s: %s (%v) %s\n", task.Url, pb.Check_CHECK_STATUS_FAIL.String(), task.Checks[1], err)
-				check = &db.Check{
-					Url:     task.Url,
-					Type:    checkMethod,
-					Status:  pb.Check_CHECK_STATUS_FAIL.String(),
-					Comment: err.Error(),
-				}
 				return
 			}
 		}
