@@ -1,6 +1,8 @@
 package config
 
 import (
+	"log"
+
 	"github.com/joho/godotenv"
 )
 
@@ -23,12 +25,15 @@ const (
 	DefaultDBPassword          = "checker"
 	DefaultURLConfig           = "url.json"
 	DefaultGRPCPort            = "443"
-	DefaultHealthCheckDuration = 10 // in seconds (default 10 minutes)
+	DefaultHealthCheckDuration = 1 // in seconds (default 10 minutes)
 )
 
 // LoadConfig load enveronment form .env file if it exist and read enveronment
 func LoadConfig() {
-	godotenv.Load(".env")
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Println(".env not found")
+	}
 
 	DBHost = mustEnvStr("DB_HOST")
 	DBPort = optionalEnvStr("DB_PORT", DefaultDBPort)
