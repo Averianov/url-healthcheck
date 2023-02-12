@@ -21,6 +21,8 @@ run-api:
 	go run cmd/api/main.go
 run-disp:
 	go run cmd/url-dispatcher/main.go
+client:
+	go run cmd/test-client/main.go
 run-full:
 	ps aux | grep -e 'urlapi' | awk '{print $1}' | xargs kill -9
 	ps aux | grep -e 'urldisp' | awk '{print $1}' | xargs kill -9
@@ -36,6 +38,7 @@ help:
 	@echo '    compile                 	Build executable file.'
 	@echo '    run-api                	Start api without compile.'
 	@echo '    run-disp               	Start dispatcher without compile.'
+	@echo '    client               	Start test client for check api.'
 	@echo '    run-full               	Start all proccess with logging.'
 	@echo '    help                    	Show this help screen.'
 	@echo '    unit         			Run unit tests.'

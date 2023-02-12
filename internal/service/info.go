@@ -43,12 +43,7 @@ func (s *infoServer) Checks(ctx context.Context, _ *pb.Empty) (list *pb.CheckLis
 			var grpcChecks []*pb.Check = []*pb.Check{}
 			for _, chk := range checks {
 				//fmt.Printf("%v", chk)
-				grpcCheck := new(pb.Check)
-				grpcCheck.Id = int64(chk.ID)
-				grpcCheck.Url = chk.Url
-				grpcCheck.Type = pb.Check_CheckType(pb.Check_CheckType_value[chk.Type])
-				grpcCheck.Status = pb.Check_CheckStatus(pb.Check_CheckStatus_value[chk.Status])
-				grpcCheck.Comment = chk.Comment
+				grpcCheck := dbCheckToGrpcCheck(chk)
 				grpcChecks = append(grpcChecks, grpcCheck)
 			}
 

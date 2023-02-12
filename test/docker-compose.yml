@@ -1,36 +1,66 @@
-version: '3'
+version: '2'
 
 services:
   db:
-    container_name: db
+    hostname: mysql.urlchecker.local
     build:
-      context: .
+      context: ..
       dockerfile: ./deployments/mysql/Dockerfile
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: test
-      MYSQL_USER: checker
-      MYSQL_PASSWORD: checker
-    ports:
-      - "3306:3306"
-    tty: true
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=test
+    - MYSQL_USER=checker
+    - MYSQL_PASSWORD=checker
+    ports: 
+      - 3306:3306
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.2
 
-  app:
-    container_name: app
-    build: 
-      context: .
-      dockerfile: ./deployments/app/Dockerfile
+  api:
+    hostname: api.urlchecker.local
+    build:
+      context: ..
+      dockerfile: ./deployments/api/Dockerfile
+    ports: 
+      - 443:443
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.3
     environment:
-      DB_HOSTS: localhost
-      DB_PORT: "3306"
-      DB_SCHEMA: test
-      DB_USER: checker
-      DB_PASSWORD: checker
-      DB_DROP: false
-      URL_CONFIG: "test.json"
-    ports:
-      - "443:443"
+    - DB_HOST=172.20.0.2
+    - DB_PORT=3306
+    - DB_SCHEMA=test
+    - DB_USER=checker
+    - DB_PASSWORD=checker
+    - DB_DROP=true
     depends_on:
       - db
     tty: true
-      
+
+  disp:
+    hostname: disp.urlchecker.local
+    build:
+      context: ..
+      dockerfile: ./deployments/disp/Dockerfile
+    networks:
+      static-network:
+        ipv4_address: 172.20.0.4
+    environment:
+    - DB_HOST=172.20.0.2
+    - DB_PORT=3306
+    - DB_SCHEMA=test
+    - DB_USER=checker
+    - DB_PASSWORD=checker
+    - URL_CONFIG=url.json
+    - HCK_DURATION=2
+    depends_on:
+      - api
+    tty: true
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
