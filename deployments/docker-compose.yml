@@ -53,7 +53,7 @@ services:
     - DB_USER=checker
     - DB_PASSWORD=checker
     - URL_CONFIG=url.json
-    - HCK_DURATION=1
+    - HCK_DURATION=5
     depends_on:
       - api
     tty: true
