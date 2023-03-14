@@ -5,7 +5,7 @@ import (
 	pb "url-healthcheck/pkg/grpc"
 )
 
-func dbCheckToGrpcCheck(chk db.Check) (grpcCheck *pb.Check, err error) {
+func dbCheckToGrpcCheck(chk db.Check) (grpcCheck *pb.Check) {
 	grpcCheck = new(pb.Check)
 	grpcCheck.Id = int64(chk.ID)
 	grpcCheck.Url = chk.Url
